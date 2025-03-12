@@ -6,4 +6,7 @@ const collabSchema = new mongoose.Schema({
   message: { type: String, required: true },
 });
 
-module.exports = mongoose.model('Collab', collabSchema);
+// Prevent model recompilation
+const Collab = mongoose.models.Collab || mongoose.model('Collab', collabSchema);
+
+module.exports = Collab;

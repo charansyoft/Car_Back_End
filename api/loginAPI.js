@@ -1,35 +1,20 @@
 import express from "express";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import cors from "cors"; // Keep only one import
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
 
+const router = express.Router();
 
-dotenv.config(); // Load environment variables
+// Define User Schema
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+});
 
-const app = express();
-const PORT = 5000;
-
-// Enable CORS for all origins (or you can specify specific origins)
-app.use(cors());
-
-// Parse JSON data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// MongoDB connection URI (replace this if you're using MongoDB Atlas or a different URI)
-const mongoURI = "mongodb://localhost:27017/myAppDB"; // Updated DB name to reflect both collections
-
-// Connect to MongoDB
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch(err => console.log("Error connecting to MongoDB:", err));
+import User from "../models/User.js"; // ✅ Works with ES Modules
 
 // Login route
-app.post("/api/login", async (req, res) => {
+router.post("/", async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -45,5 +30,4 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+export default router;

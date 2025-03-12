@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const contactUsSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -6,4 +6,7 @@ const contactUsSchema = new mongoose.Schema({
   message: { type: String, required: true },
 });
 
-module.exports = mongoose.model('ContactUs', contactUsSchema);
+// Prevent model recompilation
+const ContactUs = mongoose.models.ContactUs || mongoose.model("ContactUs", contactUsSchema);
+
+export default ContactUs;
