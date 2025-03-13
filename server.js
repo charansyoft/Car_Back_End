@@ -3,9 +3,12 @@ import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+
 import contactRoutes from "./api/contactAPI.js";
 import signupRoutes from "./api/signupAPI.js";
 import loginRoutes from "./api/loginAPI.js";
+import productsRoutes from "./api/ProductsApi.js";
+import bookingsRoutes from "./api/BookingsApi.js"; // Import bookings API
 
 dotenv.config();
 
@@ -17,7 +20,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve uploaded files (if you have product images or files)
+// Serve uploaded files (for product images)
 app.use("/uploads", express.static("uploads"));
 
 // MongoDB connection
@@ -30,8 +33,8 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use("/api/contact", contactRoutes);
 app.use("/api/signup", signupRoutes);
 app.use("/api/login", loginRoutes);
-
-// Add Products API route
+app.use("/api/products", productsRoutes);
+app.use("/api/bookings", bookingsRoutes); // ✅ Add bookings API route
 
 // Start Server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
