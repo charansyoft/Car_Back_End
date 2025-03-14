@@ -3,22 +3,22 @@ import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 import contactRoutes from "./api/contactAPI.js";
-import signupRoutes from "./api/signupAPI.js";
-import loginRoutes from "./api/loginAPI.js";
 import productsRoutes from "./api/ProductsApi.js";
-import bookingsRoutes from "./api/BookingsApi.js"; // Import bookings API
-
+import bookingsRoutes from "./api/BookingsApi.js";
+import authRoutes from "./api/authRoutes.js"
 dotenv.config();
 
 const app = express();
 const PORT = 5000;
 
 // Enable CORS and parse JSON data
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", credentials: true })); // ✅ Allow frontend requests with credentials
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser()); // ✅ To handle authentication tokens
 
 // Serve uploaded files (for product images)
 app.use("/uploads", express.static("uploads"));
@@ -31,10 +31,9 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // API Routes
 app.use("/api/contact", contactRoutes);
-app.use("/api/signup", signupRoutes);
-app.use("/api/login", loginRoutes);
 app.use("/api/products", productsRoutes);
-app.use("/api/bookings", bookingsRoutes); // ✅ Add bookings API route
+app.use("/api/bookings", bookingsRoutes);
+app.use("/api/auth", authRoutes); // ✅ Add authentication routes
 
 // Start Server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
