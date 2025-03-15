@@ -8,23 +8,25 @@ import cookieParser from "cookie-parser";
 import contactRoutes from "./api/contactAPI.js";
 import productsRoutes from "./api/ProductsApi.js";
 import bookingsRoutes from "./api/BookingsApi.js";
-import authRoutes from "./api/authRoutes.js"
+import loginRoutes from "./api/LoginApi.js";
+
 dotenv.config();
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/myAppDB";
 
-// Enable CORS and parse JSON data
-app.use(cors({ origin: "http://localhost:5173", credentials: true })); // ✅ Allow frontend requests with credentials
+// Middleware
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser()); // ✅ To handle authentication tokens
+app.use(cookieParser());
+app.use(express.json());
 
-// Serve uploaded files (for product images)
+// Serve uploaded files
 app.use("/uploads", express.static("uploads"));
 
 // MongoDB connection
-const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/myAppDB";
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ MongoDB connected successfully"))
   .catch(err => console.error("❌ Error connecting to MongoDB:", err));
@@ -33,7 +35,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use("/api/contact", contactRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/bookings", bookingsRoutes);
-app.use("/api/auth", authRoutes); // ✅ Add authentication routes
+app.use("/api/auth", loginRoutes);
 
 // Start Server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
