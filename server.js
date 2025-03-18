@@ -9,7 +9,7 @@ import contactRoutes from "./api/contactAPI.js";
 import productsRoutes from "./api/ProductsApi.js";
 import loginRoutes from "./api/LoginApi.js";
 import signUpRoutes from "./api/SignUpApi.js"; // ✅ Added missing signup route
-
+import bookingsRoutes from "./api/BookingsApi.js"
 dotenv.config();
 
 const app = express();
@@ -34,6 +34,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 // API Routes
 app.use("/api/contact", contactRoutes);
 app.use("/api/products", productsRoutes);
+app.use("/api/bookings", bookingsRoutes);
 app.use("/api/auth", loginRoutes);
 app.use("/api/signup", signUpRoutes); // ✅ Added missing signup route
 

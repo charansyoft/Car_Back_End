@@ -1,41 +1,29 @@
-// api/BookingsApi.js
-
 import express from "express";
-import Booking from "../models/BookingsModel.js"; // Assuming you have a Booking model
+import { body } from "express-validator";
+import authMiddleware from "../middleware/authMiddleware.js";
+import { createBooking, getUserBookings, getAllBookings } from "../controllers/BookingsController.js";
 
 const router = express.Router();
 
-// Create a booking
-router.post("/", async (req, res) => {
-  try {
-    const { productId, title, image, price, fuelType, transmission } = req.body;
-    const newBooking = new Booking({
-      productId,
-      title,
-      image,
-      price,
-      fuelType,
-      transmission,
-      user: req.user._id, // Assuming user info is in req.user from authentication middleware
-    });
-    
-    await newBooking.save();
-    res.status(201).json(newBooking);
-  } catch (err) {
-    console.error("Error creating booking:", err);
-    res.status(500).json({ error: "Failed to create booking" });
-  }
-});
+// ✅ Create a booking (User must be authenticated)
+router.post(
+  "/",
+  authMiddleware,
+  [
+    body("productId").notEmpty().withMessage("Product ID is required"),
+    body("title").notEmpty().withMessage("Title is required"),
+    body("image").notEmpty().withMessage("Image URL is required"),
+    body("price").isNumeric().withMessage("Price must be a number"),
+    body("fuelType").notEmpty().withMessage("Fuel type is required"),
+    body("transmission").notEmpty().withMessage("Transmission type is required"),
+  ],
+  createBooking
+);
 
-// Get all bookings (optional, if you need to display bookings)
-router.get("/", async (req, res) => {
-  try {
-    const bookings = await Booking.find().populate("user", "name email"); // Adjust according to your User model
-    res.status(200).json(bookings);
-  } catch (err) {
-    console.error("Error fetching bookings:", err);
-    res.status(500).json({ error: "Failed to fetch bookings" });
-  }
-});
+// ✅ Get all bookings (Admin only)
+router.get("/", authMiddleware, getAllBookings);
+
+// ✅ Get bookings for a specific user
+router.get("/user", authMiddleware, getUserBookings);
 
 export default router;
