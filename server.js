@@ -7,8 +7,8 @@ import cookieParser from "cookie-parser";
 
 import contactRoutes from "./api/contactAPI.js";
 import productsRoutes from "./api/ProductsApi.js";
-import bookingsRoutes from "./api/BookingsApi.js";
 import loginRoutes from "./api/LoginApi.js";
+import signUpRoutes from "./api/SignUpApi.js"; // ✅ Added missing signup route
 
 dotenv.config();
 
@@ -34,8 +34,14 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 // API Routes
 app.use("/api/contact", contactRoutes);
 app.use("/api/products", productsRoutes);
-app.use("/api/bookings", bookingsRoutes);
 app.use("/api/auth", loginRoutes);
+app.use("/api/signup", signUpRoutes); // ✅ Added missing signup route
+
+// ✅ Global Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error("🔥 Server Error:", err);
+  res.status(500).json({ message: "Something went wrong, please try again later." });
+});
 
 // Start Server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
