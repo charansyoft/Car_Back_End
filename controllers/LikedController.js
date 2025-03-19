@@ -38,10 +38,9 @@ export const likeProduct = async (req, res) => {
 export const unlikeProduct = async (req, res) => {
   try {
     const { likeId } = req.params;
-
     const deletedLike = await LikedModel.findOneAndDelete({
       _id: likeId,
-      userId: req.user._id, // Ensure user can only delete their own likes
+      userId: req.user._id,
     });
 
     if (!deletedLike) {
