@@ -1,7 +1,12 @@
 import express from "express";
 import { body } from "express-validator";
 import authMiddleware from "../middleware/authMiddleware.js";
-import { createBooking, getUserBookings, getAllBookings } from "../controllers/BookingsController.js";
+import {
+  createBooking,
+  getUserBookings,
+  getAllBookings,
+  deleteBooking, // ✅ Added deleteBooking controller
+} from "../controllers/BookingsController.js";
 
 const router = express.Router();
 
@@ -25,5 +30,8 @@ router.get("/", authMiddleware, getAllBookings);
 
 // ✅ Get bookings for a specific user
 router.get("/user", authMiddleware, getUserBookings);
+
+// ✅ Delete a booking
+router.delete("/:id", authMiddleware, deleteBooking);
 
 export default router;

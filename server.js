@@ -8,8 +8,10 @@ import cookieParser from "cookie-parser";
 import contactRoutes from "./api/contactAPI.js";
 import productsRoutes from "./api/ProductsApi.js";
 import loginRoutes from "./api/LoginApi.js";
-import signUpRoutes from "./api/SignUpApi.js"; // ✅ Added missing signup route
-import bookingsRoutes from "./api/BookingsApi.js"
+import signUpRoutes from "./api/SignUpApi.js";
+import bookingsRoutes from "./api/BookingsApi.js";
+import likedRoutes from "./api/LikedApi.js";
+
 dotenv.config();
 
 const app = express();
@@ -27,18 +29,19 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 // MongoDB connection
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose
+  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ MongoDB connected successfully"))
-  .catch(err => console.error("❌ Error connecting to MongoDB:", err));
+  .catch((err) => console.error("❌ Error connecting to MongoDB:", err));
 
 // API Routes
 app.use("/api/contact", contactRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/bookings", bookingsRoutes);
 app.use("/api/auth", loginRoutes);
-app.use("/api/signup", signUpRoutes); // ✅ Added missing signup route
-
-// ✅ Global Error Handling Middleware
+app.use("/api/signup", signUpRoutes);
+app.use("/api/liked", likedRoutes);
+// Global Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("🔥 Server Error:", err);
   res.status(500).json({ message: "Something went wrong, please try again later." });
